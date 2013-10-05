@@ -1,13 +1,10 @@
 var score = 0;
+var highScore = 0;
 
 var bSettings = {
-  numEnemies: 20,
-  svgWidth: 0.6*(window.innerWidth ||
-            document.documentElement.clientWidth ||
-            document.body.clientWidth),
-  svgHeight: 0.6*(window.innerHeight ||
-            document.documentElement.clientHeight ||
-            document.body.clientHeight)
+  numEnemies: 1,
+  svgWidth: 700,
+  svgHeight: 500
 };
 
 var gameBoard = d3.select(".gameBoard")
@@ -19,7 +16,7 @@ var gameBoard = d3.select(".gameBoard")
 var createPlayers = function(n) {
   var cx, cy;
   var r = 10;
-  var color = 'red';
+  var color = 'black';
 
   for (var i = 0; i < n; i++) {
     cx = Math.max(Math.floor(Math.random()*(bSettings.svgWidth-r)),r);
@@ -79,9 +76,12 @@ var force = d3.layout.force()
    setInterval(function(){
      score++;
      d3.selectAll('.enemy').each(function() {
-       d3.select('.scoreboard').text(score.toString())
-       if (Math.abs((d3.select(this).attr('cy') - d3.select('.thePlayer').attr('cy')) < 5)
-         && Math.abs((d3.select(this).attr('cx') - d3.select('.thePlayer').attr('cx'))) < 5) {
+       d3.select('.scoreboard').html('High Score: ' + highScore.toString() + '</br> Current Score: ' +score.toString())
+       if (Math.abs((d3.select(this).attr('cy') - d3.select('.thePlayer').attr('cy')) < 10)
+         && Math.abs((d3.select(this).attr('cx') - d3.select('.thePlayer').attr('cx'))) < 10) {
+         if (score > highScore) {
+          highScore = score;
+         }
          score = 0;
          // force.stop();
          // startForce();
