@@ -1,5 +1,5 @@
 var bSettings = {
-  numEnemies: 30,
+  numEnemies: 5,
   svgWidth: 0.6*(window.innerWidth ||
             document.documentElement.clientWidth ||
             document.body.clientWidth),
@@ -14,7 +14,7 @@ var gameBoard = d3.select(".gameBoard")
   .attr("height", bSettings.svgHeight);
 
 
-var createEnemies = function(n) {
+var createPlayers = function(n) {
   var cx, cy;
   var r = 10;
   var color = 'red';
@@ -29,22 +29,33 @@ var createEnemies = function(n) {
       .attr("r", r)
       .style("fill", color);
   }
-
+  
   var range = _.range(0,bSettings.numEnemies);
   d3.select('body').selectAll('circle').data(range);
+
+  // this is somehow triggering movement
   d3.select('body').selectAll('circle').attr('class',function(d){
-    return d;
+    return 'enemy ' + d;
   });
+
+  var player = gameBoard.append("circle")
+      .attr("cx", bSettings.svgWidth/2)
+      .attr("cy", bSettings.svgHeight/2)
+      .attr("r", r)
+      .style("fill", 'blue');
 };
 
-var moveEnemies = function() {
-  d3.select('body').selectAll('circle').each(function(){
-    d3.select(this).transition().duration(2100).attr('cx', Math.max(Math.floor(Math.random()*(bSettings.svgWidth-10)),10))
-    .attr('cy', Math.max(Math.floor(Math.random()*(bSettings.svgHeight-10)),10));
-  });
-};
+createPlayers(bSettings.numEnemies);
 
 
-createEnemies(bSettings.numEnemies);
-moveEnemies();
-setInterval(moveEnemies, 4000);
+// var moveEnemies = function() {
+//   d3.select('body').selectAll('.enemy').each(function(){
+//     d3.select(this).transition().duration(2100).attr('cx', Math.max(Math.floor(Math.random()*(bSettings.svgWidth-10)),10))
+//     .attr('cy', Math.max(Math.floor(Math.random()*(bSettings.svgHeight-10)),10));
+//   });
+// };
+
+
+
+// moveEnemies();
+// setInterval(moveEnemies, 4000);
