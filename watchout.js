@@ -37,4 +37,14 @@ var createEnemies = function(n) {
   });
 };
 
+var moveEnemies = function() {
+  d3.select('body').selectAll('circle').each(function(){
+    d3.select(this).transition().duration(2100).attr('cx', Math.max(Math.floor(Math.random()*(bSettings.svgWidth-10)),10))
+    .attr('cy', Math.max(Math.floor(Math.random()*(bSettings.svgHeight-10)),10));
+  });
+};
+
+
 createEnemies(bSettings.numEnemies);
+moveEnemies();
+setInterval(moveEnemies, 4000);
