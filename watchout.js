@@ -1,5 +1,5 @@
 var bSettings = {
-  numEnemies: 5,
+  numEnemies: 30,
   svgWidth: 0.6*(window.innerWidth ||
             document.documentElement.clientWidth ||
             document.body.clientWidth),
@@ -42,20 +42,29 @@ var createPlayers = function(n) {
       .attr("cx", bSettings.svgWidth/2)
       .attr("cy", bSettings.svgHeight/2)
       .attr("r", r)
-      .style("fill", 'blue');
+      .style("fill", 'blue')
+      .call(d3.behavior.drag().on("drag", move));
+};
+
+function move(){
+    this.parentNode.appendChild(this);
+    var dragTarget = d3.select(this);
+    dragTarget
+        .attr("cx", function(){return d3.event.dx + parseInt(dragTarget.attr("cx"))})
+        .attr("cy", function(){return d3.event.dy + parseInt(dragTarget.attr("cy"))});
 };
 
 createPlayers(bSettings.numEnemies);
 
 
-// var moveEnemies = function() {
-//   d3.select('body').selectAll('.enemy').each(function(){
-//     d3.select(this).transition().duration(2100).attr('cx', Math.max(Math.floor(Math.random()*(bSettings.svgWidth-10)),10))
-//     .attr('cy', Math.max(Math.floor(Math.random()*(bSettings.svgHeight-10)),10));
-//   });
-// };
+var moveEnemies = function() {
+  d3.select('body').selectAll('.enemy').each(function(){
+    d3.select(this).transition().duration(2000).attr('cx', Math.max(Math.floor(Math.random()*(bSettings.svgWidth-10)),10))
+    .attr('cy', Math.max(Math.floor(Math.random()*(bSettings.svgHeight-10)),10));
+  });
+};
 
 
 
-// moveEnemies();
-// setInterval(moveEnemies, 4000);
+moveEnemies();
+setInterval(moveEnemies, 2000);
