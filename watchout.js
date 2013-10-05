@@ -48,8 +48,24 @@ var createPlayers = function(n) {
 function move(){
     var dragTarget = d3.select(this);
     dragTarget
-        .attr("cx", function(){return d3.event.dx + parseInt(dragTarget.attr("cx"));})
-        .attr("cy", function(){return d3.event.dy + parseInt(dragTarget.attr("cy"));});
+        .attr("cx", function(){
+          if ((d3.event.dx + parseInt(dragTarget.attr("cx"))) > 695) {
+            return 690;
+          } else if ((d3.event.dx + parseInt(dragTarget.attr("cx"))) < 5){
+            return 10;
+          } else {
+          return (d3.event.dx + parseInt(dragTarget.attr("cx")));
+          }
+        })
+        .attr("cy", function(){
+          if ((d3.event.dy + parseInt(dragTarget.attr("cy"))) > 495) {
+            return 490;
+          } else if ((d3.event.dy + parseInt(dragTarget.attr("cy"))) < 5){
+            return 10;
+          } else {
+          return d3.event.dy + parseInt(dragTarget.attr("cy"));
+          }
+        });
 };
 
 createPlayers(bSettings.numEnemies);
