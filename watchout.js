@@ -1,5 +1,7 @@
+var score = 0;
+
 var bSettings = {
-  numEnemies: 30,
+  numEnemies: 5,
   svgWidth: 0.6*(window.innerWidth ||
             document.documentElement.clientWidth ||
             document.body.clientWidth),
@@ -43,11 +45,11 @@ var createPlayers = function(n) {
       .attr("cy", bSettings.svgHeight/2)
       .attr("r", r)
       .style("fill", 'blue')
+      .attr('class', 'thePlayer')
       .call(d3.behavior.drag().on("drag", move));
 };
 
 function move(){
-    this.parentNode.appendChild(this);
     var dragTarget = d3.select(this);
     dragTarget
         .attr("cx", function(){return d3.event.dx + parseInt(dragTarget.attr("cx"))})
@@ -62,9 +64,34 @@ var moveEnemies = function() {
     d3.select(this).transition().duration(2000).attr('cx', Math.max(Math.floor(Math.random()*(bSettings.svgWidth-10)),10))
     .attr('cy', Math.max(Math.floor(Math.random()*(bSettings.svgHeight-10)),10));
   });
+
+  // var collide()
+
 };
 
-
+  
 
 moveEnemies();
 setInterval(moveEnemies, 2000);
+
+// var startForce = function(){
+var force = d3.layout.force()
+  .nodes(d3.selectAll('circle'))
+  // .alpha(.005)
+  .on('tick', function(){
+      d3.select('.scoreboard').text(score.toString())
+      score++;
+     d3.select('body').selectAll('.enemy').each(function() {
+       if (Math.abs((d3.select(this).attr('cy') - d3.select('body').select('.thePlayer').attr('cy')) < 10)
+         && Math.abs((d3.select(this).attr('cx') - d3.select('body').select('.thePlayer').attr('cx'))) < 10) {
+         score = 0;
+         // force.stop();
+         // startForce();
+        }
+     })
+  })
+  // .tick(100)
+  .start();
+// }
+
+// startForce();
