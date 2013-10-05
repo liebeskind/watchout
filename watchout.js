@@ -2,7 +2,7 @@ var score = 0;
 var highScore = 0;
 
 var bSettings = {
-  numEnemies: 1,
+  numEnemies: 20,
   svgWidth: 700,
   svgHeight: 500
 };
@@ -28,11 +28,10 @@ var createPlayers = function(n) {
       .attr("r", r)
       .style("fill", color);
   }
-  
+
   var range = _.range(0,bSettings.numEnemies);
   d3.select('body').selectAll('circle').data(range);
 
-  // this is somehow triggering movement
   d3.select('body').selectAll('circle').attr('class',function(d){
     return 'enemy ' + d;
   });
@@ -49,12 +48,11 @@ var createPlayers = function(n) {
 function move(){
     var dragTarget = d3.select(this);
     dragTarget
-        .attr("cx", function(){return d3.event.dx + parseInt(dragTarget.attr("cx"))})
-        .attr("cy", function(){return d3.event.dy + parseInt(dragTarget.attr("cy"))});
+        .attr("cx", function(){return d3.event.dx + parseInt(dragTarget.attr("cx"));})
+        .attr("cy", function(){return d3.event.dy + parseInt(dragTarget.attr("cy"));});
 };
 
 createPlayers(bSettings.numEnemies);
-
 
 var moveEnemies = function() {
   d3.select('body').selectAll('.enemy').each(function(){
@@ -62,34 +60,20 @@ var moveEnemies = function() {
     .attr('cy', Math.max(Math.floor(Math.random()*(bSettings.svgHeight-10)),10));
   });
 
-  // var collide()
-
 };
 
-  
+setInterval(function(){
+   score++;
+   d3.selectAll('.enemy').each(function() {
+     d3.select('.scoreboard').html('High Score: ' + highScore.toString() + '</br> Current Score: ' +score.toString());
+     if (Math.abs((d3.select(this).attr('cy') - d3.select('.thePlayer').attr('cy')) < 10)
+       && Math.abs((d3.select(this).attr('cx') - d3.select('.thePlayer').attr('cx'))) < 10) {
+       if (score > highScore) {
+        highScore = score;
+       }
+       score = 0;
+      }
+   });
+}, 10);
 
-moveEnemies();
 setInterval(moveEnemies, 2000);
-
-// var startForce = function(){
-var force = d3.layout.force()
-   setInterval(function(){
-     score++;
-     d3.selectAll('.enemy').each(function() {
-       d3.select('.scoreboard').html('High Score: ' + highScore.toString() + '</br> Current Score: ' +score.toString())
-       if (Math.abs((d3.select(this).attr('cy') - d3.select('.thePlayer').attr('cy')) < 10)
-         && Math.abs((d3.select(this).attr('cx') - d3.select('.thePlayer').attr('cx'))) < 10) {
-         if (score > highScore) {
-          highScore = score;
-         }
-         score = 0;
-         // force.stop();
-         // startForce();
-        }
-     })
-  }, 10)
-
-
-// }
-
-// startForce();
