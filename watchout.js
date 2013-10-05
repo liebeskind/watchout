@@ -1,7 +1,7 @@
 var score = 0;
 
 var bSettings = {
-  numEnemies: 5,
+  numEnemies: 20,
   svgWidth: 0.6*(window.innerWidth ||
             document.documentElement.clientWidth ||
             document.body.clientWidth),
@@ -76,22 +76,20 @@ setInterval(moveEnemies, 2000);
 
 // var startForce = function(){
 var force = d3.layout.force()
-  .nodes(d3.selectAll('circle'))
-  // .alpha(.005)
-  .on('tick', function(){
-      d3.select('.scoreboard').text(score.toString())
-      score++;
-     d3.select('body').selectAll('.enemy').each(function() {
-       if (Math.abs((d3.select(this).attr('cy') - d3.select('body').select('.thePlayer').attr('cy')) < 10)
-         && Math.abs((d3.select(this).attr('cx') - d3.select('body').select('.thePlayer').attr('cx'))) < 10) {
+   setInterval(function(){
+     score++;
+     d3.selectAll('.enemy').each(function() {
+       d3.select('.scoreboard').text(score.toString())
+       if (Math.abs((d3.select(this).attr('cy') - d3.select('.thePlayer').attr('cy')) < 5)
+         && Math.abs((d3.select(this).attr('cx') - d3.select('.thePlayer').attr('cx'))) < 5) {
          score = 0;
          // force.stop();
          // startForce();
         }
      })
-  })
-  // .tick(100)
-  .start();
+  }, 10)
+
+
 // }
 
 // startForce();
