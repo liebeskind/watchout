@@ -1,19 +1,32 @@
-var r = 10;
-var svgWidth = 1000;
-var svgHeight = 1000;
-var color = 'red';
-
-var cx = 25;
-var cy = 25;
-
+var bSettings = {
+  numEnemies: 30,
+  svgWidth: 1000,
+  svgHeight: 1000
+};
 
 var gameBoard = d3.select(".gameBoard")
   .append("svg")
-  .attr("width", svgWidth)
-  .attr("height", svgHeight);
+  .attr("width", bSettings.svgWidth)
+  .attr("height", bSettings.svgHeight);
 
-var enemy = gameBoard.append("circle")
-  .attr("cx", cx)
-  .attr("cy", cy)
-  .attr("r", r)
-  .style("fill", color);
+
+var createEnemies = function(n) {
+  var cx, cy;
+  var r = 10;
+  var color = 'red';
+
+  for (var i = 0; i < n; i++) {
+    cx = Math.floor(Math.random()*bSettings.svgWidth);
+    cy = Math.floor(Math.random()*bSettings.svgHeight);
+
+    var enemy = gameBoard.append("circle")
+      .attr("cx", cx)
+      .attr("cy", cy)
+      .attr("r", r)
+      .style("fill", color);
+  }
+};
+
+createEnemies(bSettings.numEnemies);
+
+
