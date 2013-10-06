@@ -11,8 +11,7 @@ var player;
 var svg = d3.select("svg")
     .attr("width", w)
     .attr("height", h)
-    .on('mousemove',mousemove)
-;
+    .on('mousemove',mouseMove);
 
 var update = function(data){
   var enemies = svg.selectAll('.enemy')
@@ -25,58 +24,55 @@ var update = function(data){
     .attr('cx',function(d) { return d.x; })
     .attr('cy',function(d) { return d.y; });
 
-  var checkCollision = function(enemyNextPos,playerX,playerY) {
-    console.log(Math.sqrt(Math.pow(enemyNextPos.x-playerX, 2) + Math.pow(enemyNextPos.y-playerY, 2)));
-//pythagorean theorem for checking distance between player and enemy
-    if (Math.sqrt(Math.pow(enemyNextPos.x-playerX, 2) + Math.pow(enemyNextPos.y-playerY, 2)) < (2*r)) {
-      console.log('x');
+  var checkCollision = function(enemyPosition,playerPosition) {
+    if (Math.sqrt(Math.pow(enemyPosition.x-playerPosition.x, 2)
+      + Math.pow(enemyPosition.y-playerPosition.y, 2)) < (2*r)) {
       if (highScore < score) {
         highScore = score;
       }
-      score = 0;
 
-      //flashes when player has been hit
-      d3.select('.player').attr('r', 0);
+      score = 0;
+      d3.select('.player').attr('fill', 'red');
+
       setTimeout(function(){
-        d3.select('.player').attr('r', 10);
-         },200);
-         }
+        d3.select('.player').attr('fill', 'orange');
+      },200);
+    }
   };
 
-  tweenWithCollisionDetection = function(d) {
+  var moveCollide = function(d) {
     score++;
-    var endPos, enemy, startPos;
-    enemy = d3.select(this);
-    startPos = {
+    var enemy = d3.select(this);
+    var enemyStarting = {
       x: parseFloat(enemy.attr('cx')),
       y: parseFloat(enemy.attr('cy'))
     };
-    endPos = {
+    var enemyEnding = {
       x: d.x,
       y: d.y
     };
 
     return function(t) {
-      var playerX = parseFloat(player.attr('cx'));
-      var playerY = parseFloat(player.attr('cy'));
-      var enemyNextPos = {
-        x: startPos.x + (endPos.x - startPos.x) * t,
-        y: startPos.y + (endPos.y - startPos.y) * t
+      var playerPosition = {
+        x: parseFloat(player.attr('cx')),
+        y: parseFloat(player.attr('cy'))
+      };
+      var enemyPosition = {
+        x: enemyStarting.x + (enemyEnding.x - enemyStarting.x) * t,
+        y: enemyStarting.y + (enemyEnding.y - enemyStarting.y) * t
       };
 
-      checkCollision(enemyNextPos,playerX,playerY);
+      checkCollision(enemyPosition,playerPosition);
 
-      return enemy.attr('cx', enemyNextPos.x).attr('cy', enemyNextPos.y);
+      return enemy.attr('cx', enemyPosition.x).attr('cy', enemyPosition.y);
     };
   };
-
 
   enemies
   .transition()
   .duration(2000)
-  .tween('custom', tweenWithCollisionDetection);
+  .tween('custom', moveCollide);
 };
-
 
 var createPlayer = function() {
   player = svg.append('circle')
@@ -87,28 +83,27 @@ var createPlayer = function() {
   .attr('cy', h/2);
 }();
 
-function mousemove(d,i) {
+function mouseMove(d,i) {
   mouseCoord = d3.mouse(this);
   player.attr('cx', mouseCoord[0])
   .attr('cy', mouseCoord[1]);
 }
 
-
 var start = function() {
   setInterval(function(){
     for (var i = 0; i < n; i++) {
-      enemyCoord.push(
-        {x: Math.max((Math.random()*(w-r)),r),
-         y: Math.max((Math.random()*(h-r)),r)});
+      enemyCoord.push({
+        x: Math.max((Math.random()*(w-r)),r),
+        y: Math.max((Math.random()*(h-r)),r)
+      });
     }
     update(enemyCoord);
     enemyCoord = [];
   }, 2000);
 
-  setInterval(
-    function(){
+  setInterval(function(){
     score++;
-  d3.select('.scoreboard').html('High Score: ' + highScore.toString() 
-    + '</br> Current Score: ' +score.toString());
+    d3.select('.scoreboard').html('High Score: ' + highScore.toString()
+    + '</br> Current Score: ' + score.toString());
   },100);
 }();
