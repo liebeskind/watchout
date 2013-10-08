@@ -2,7 +2,7 @@ var score = 0;
 var highScore = 0;
 var w = 700;
 var h = 500;
-var n = 25;
+var n = 1;
 var r = 10;
 var enemyCoord = [];
 var mouseCoord = [];
@@ -32,6 +32,8 @@ var update = function(data){
       }
 
       score = 0;
+      n = 1;
+      d3.selectAll('.enemy').data([]).exit().remove();
       d3.select('.player').attr('fill', 'red');
 
       setTimeout(function(){
@@ -90,6 +92,7 @@ function mouseMove(d,i) {
 
 var start = function() {
   setInterval(function(){
+    n+=1;
     for (var i = 0; i < n; i++) {
       enemyCoord.push({
         x: Math.max((Math.random()*(w-r)),r),
