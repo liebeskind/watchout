@@ -63,7 +63,6 @@ var update = function(data){
       };
 
       checkCollision(enemyPosition,playerPosition);
-
       return enemy.attr('cx', enemyPosition.x).attr('cy', enemyPosition.y);
     };
   };
