@@ -1,17 +1,22 @@
-var score = 0;
+var score = 1;
 var highScore = 0;
+
+//enemySVG (Gameboard)
 var w = 700;
 var h = 500;
+
+//enemies
 var n = 1;
 var r = 10;
+
 var enemyCoord = [];
 var mouseCoord = [];
 var player;
 
-var svg = d3.select("svg")
+var svg = d3.select(".enemySVG")
     .attr("width", w)
     .attr("height", h)
-    .on('mousemove',mouseMove);
+    .on('mousemove', mouseMove);
 
 var update = function(data){
   var enemies = svg.selectAll('.enemy')
@@ -76,6 +81,11 @@ var update = function(data){
 };
 
 var createPlayer = function() {
+  // var psvg = d3.select(".playerSVG")
+  //   .attr("width", w/2)
+  //   .attr("height", h/2)
+  //   .on('mousemove', mouseMove);
+
   player = svg.append('circle')
   .attr('class', 'player')
   .attr('fill', 'orange')
@@ -104,7 +114,7 @@ var start = function() {
   }, 2000);
 
   setInterval(function(){
-    score++;
+    score = Math.floor((score + 1) + (score/100));
     d3.select('.scoreboard').html('High Score: ' + highScore.toString()
     + '</br> Current Score: ' + score.toString());
   },100);
