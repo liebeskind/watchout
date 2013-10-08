@@ -18,6 +18,9 @@ var svg = d3.select(".enemySVG")
     .attr("height", h)
     .on('mousemove', mouseMove);
 
+svg.append('circle').attr('fill', 'white')
+    .attr({r: 100, cx: 340, cy: 250, opacity: 0.6});
+
 var update = function(data){
   var enemies = svg.selectAll('.enemy')
     .data(data);
@@ -113,8 +116,13 @@ var start = function() {
     enemyCoord = [];
   }, 2000);
 
+//scoring interval
   setInterval(function(){
-    score = Math.floor((score + 1) + (score/100));
+    if (player.attr('cx') > 240 && player.attr('cx') < 440 && player.attr('cy') > 150 && player.attr('cy') < 340) {
+      score = Math.floor((score + 10) + (score/100));
+    } else {
+      score++;
+    }
     d3.select('.scoreboard').html('High Score: ' + highScore.toString()
     + '</br> Current Score: ' + score.toString());
   },100);
